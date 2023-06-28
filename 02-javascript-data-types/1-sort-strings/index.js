@@ -6,4 +6,23 @@
  */
 export function sortStrings(arr, param = 'asc') {
 
+  const arrCopy = [...arr];
+
+  if (param == 'asc') {
+    return arrCopy.sort(sortStringAscending);
+  }
+  else {
+    return arrCopy.sort(sortStringDescending);
+  }
 }
+
+
+function sortStringAscending(a, b) {
+  return a.localeCompare(b, 'ru', {caseFirst: 'upper'});  
+}
+  
+
+function sortStringDescending(a, b) {
+  return -a.localeCompare(b, 'ru', {caseFirst: 'upper'}); 
+}
+
