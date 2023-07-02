@@ -1,7 +1,7 @@
 export default class ColumnChart {
   chartHeight = 50
 
-  constructor( {label = '', link = '', value = '', formatHeading = '', data = []} = {}) {
+  constructor({label = '', link = '', value = '', formatHeading = '', data = []} = {}) {
     this.element = document.createElement('div');
 
     const p = document.createElement('p');
@@ -25,7 +25,7 @@ export default class ColumnChart {
     totalValue.textContent = value;
     totalValue.classList.add('column-chart__header');
     
-    if(formatHeading instanceof Function) {
+    if (formatHeading instanceof Function) {
       totalValue.textContent = formatHeading(value);
     }
 
