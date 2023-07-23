@@ -1,3 +1,4 @@
+import dynamicSort from "./sorting-function.js"
 export default class SortableTable {
   constructor(headerConfig = [], data = []) {
     
@@ -8,12 +9,20 @@ export default class SortableTable {
   }
 
   render() {
+    const mainElement = this.createMainElement();
+    this.element = mainElement;
+
+    this.sortData('title', 'asc');
+
+    this.removeTable();
+    this.renderTable();
+  }
+
+  createMainElement() {
     const mainElement = document.createElement('div');
     mainElement.dataset.element = 'productsContainer';
     mainElement.classList.add('products-list__container');
-    this.element = mainElement;
-
-    this.sort('title', 'asc');
+    return mainElement;
   }
 
   renderTable() {
@@ -28,8 +37,8 @@ export default class SortableTable {
     this.mainTableElement.append(bodyTableElement);
 
 
-    this.headerConfig.forEach(headerCell => {
-      const headerCellElement = this.createTableHeaderCell(headerCell.id, headerCell.title, headerCell.sortable, headerCell.sortType);
+    this.headerConfig.forEach(headerCellConfig => {
+      const headerCellElement = this.createTableHeaderCell(headerCellConfig);
       headerTableElement.append(headerCellElement.content);
     });
 
@@ -79,7 +88,10 @@ export default class SortableTable {
     return bodyTableElement;
   }
 
-  createTableHeaderCell(id, title, sortable, sortType) {
+  createTableHeaderCell(headerConfig) {
+
+    const {id, title, sortable, sortType } = headerConfig;
+
     const tableHeaderCellElement = document.createElement('template');
 
     tableHeaderCellElement.innerHTML = `<div class="sortable-table__cell" data-id=${id} data-sortable=${sortable}>
@@ -99,11 +111,9 @@ export default class SortableTable {
   createTableBodyRowElement(rowData) {
     const tableBodyCellElement = document.createElement('template');
     
-    let cellsData = '';
-
-    this.headerConfig.forEach(field => {
-      cellsData += this.getTableCellTemplate(rowData[field.id], field.id);
-    });
+    let cellsData = this.headerConfig.map( field => {
+      return this.getTableCellTemplate(rowData[field.id], field.id)
+    }).join(' ');
 
     tableBodyCellElement.innerHTML = `<a href="/products/${rowData.id}" class="sortable-table__row">
                                         ${cellsData}
@@ -132,36 +142,18 @@ export default class SortableTable {
     return outputTemplate;
   }
 
-  sort(field, order) {
+  sortData(field, order) {
     const headerCellConfig = this.headerConfig.find(header => header.id == field);
     const sortType = headerCellConfig.sortType;
-    const sortFunction = this.dynamicSort(field, sortType, order);
+    const sortFunction = dynamicSort(field, sortType, order);
     this.data.sort(sortFunction);
+  }
+  
+  sort(field, order) {
+    this.sortData(field, order);
 
     this.removeTable();
     this.renderTable();
-
-  }
-
-  dynamicSort(field, type, order) {
-    let sortOrder = 1;
-    if (order == 'desc') {
-      sortOrder = -1;
-    }
-
-    if (type == 'number') {
-      return function(a, b) {
-        let result = a[field] - b[field];
-        return result * sortOrder;
-      };
-    }
-
-    if (type == 'string') {
-      return function(a, b) {
-        let result = a[field].localeCompare(b[field], 'ru', {caseFirst: 'upper'});  
-        return result * sortOrder;
-      };
-    }
   }
 
   get subElements() {

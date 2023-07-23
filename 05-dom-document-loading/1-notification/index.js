@@ -2,7 +2,7 @@ export default class NotificationMessage {
   static element;
 
   static get DefaultDuration() {
-    return 20;
+    return 20000;
   }
 
   constructor(message, object = {}) {
@@ -11,63 +11,50 @@ export default class NotificationMessage {
     this.duration = duration;
     this.type = type;
     this.message = message;
-         
-    this.render();
-  
+    
+    if(NotificationMessage.element) {
+      NotificationMessage.element.remove();
+    }
 
+    this.render();
   }
 
   render() {
-    const mainElement = this.createMainElement();
+    const mainElement = document.createElement('div');
+    mainElement.innerHTML = this.getContentTemplate();
 
-    const contentElement = this.getContentTemplate();
-    mainElement.innerHTML = contentElement;     
-  
-    this.remove();
+    this.element = mainElement.firstElementChild;
     
     NotificationMessage.element = mainElement;
   }
 
-  createMainElement() {
-    const mainElement = document.createElement('div');
-    mainElement.classList.add('notification');
-    mainElement.classList.add(`${this.type}`);
-    mainElement.style = `--value:${this.calculateTimeInSeconds()}s`;
-    return mainElement;
-  }
-
   getContentTemplate() {
-    return `<div class="timer"></div>
-              <div class="inner-wrapper">
-                <div class="notification-header">success</div>
-                  <div class="notification-body">
-                     ${this.message}
-                  </div>
-                  </div>`;
-  }
-
-  get element() {
-    return NotificationMessage.element;
+    return `<div class='notification ${this.type}' style='--value:${this.calculateTimeInSeconds()}s;'>
+              <div class="timer"></div>
+                <div class="inner-wrapper">
+                  <div class="notification-header">success</div>
+                    <div class="notification-body">
+                      ${this.message}
+                </div>
+              </div>
+              </div>`;
   }
 
   destroy() {
     this.remove();
   }
 
-  show(outerElement) {
-    outerElement = outerElement || document.body;
-
+  show(outerElement = document.body) {
     outerElement.append(NotificationMessage.element);
 
     setTimeout(() => {
       this.destroy();
-      this.remove();      
     }, this.duration);
   }
 
   remove() {
-    if (NotificationMessage.element) {
-      NotificationMessage.element.remove();
+    if (this.element) {
+      this.element.remove();
     }
   }
 
@@ -76,7 +63,7 @@ export default class NotificationMessage {
       return this.duration / 1000;  
     }
 
-    return NotificationMessage.DefaultDuration;
+    return NotificationMessage.DefaultDuration / 1000;
   }
 
 }
