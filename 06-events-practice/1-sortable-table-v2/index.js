@@ -138,15 +138,13 @@ export default class SortableTable {
       return this.getTableCellImageTemplate(cellData);
     }
 
-    const outputTemplate = ` <div class="sortable-table__cell">${cellData}</div>`;
-    return outputTemplate;
+    return ` <div class="sortable-table__cell">${cellData}</div>`;
   }
 
   getTableCellImageTemplate(images) {
-    const outputTemplate = ` <div class="sortable-table__cell">
-                             <img class="sortable-table-image" alt="Image" src=${images[0].url}>
-                             </div>`;
-    return outputTemplate;
+    return ` <div class="sortable-table__cell">
+                  <img class="sortable-table-image" alt="Image" src=${images[0].url}>
+              </div>`;
   }
 
   sortData(field, order) {

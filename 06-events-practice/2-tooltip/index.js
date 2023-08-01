@@ -12,8 +12,11 @@ class Tooltip {
   initialize () {
     this.element = this.createMainElement();
 
-    document.addEventListener('pointerover', this.elementPointerOverHandler.bind(this), false);
-    document.addEventListener('pointerout', this.elementPointerOutHandler.bind(this), false);
+    this.elementPointerOverHandler = this.elementPointerOver.bind(this);
+    this.elementPointerOutHandler = this.elementPointerOut.bind(this);
+
+    document.addEventListener('pointerover', this.elementPointerOverHandler);
+    document.addEventListener('pointerout', this.elementPointerOutHandler);
 
   }
 
@@ -32,7 +35,7 @@ class Tooltip {
     return '<div class="tooltip"></div>';
   }
 
-  elementPointerOverHandler(event) {
+  elementPointerOver(event) {
     if (event.target.dataset.tooltip) {
       this.render(event.target.dataset.tooltip);
       this.element.style.top = event.clientY + 'px';
@@ -40,11 +43,13 @@ class Tooltip {
     }
   }
 
-  elementPointerOutHandler(event) {
+  elementPointerOut(event) {
     this.element.remove();
   }
 
   destroy() {
+    document.removeEventListener('pointerover', this.elementPointerOverHandler);
+    document.removeEventListener('pointerout', this.elementPointerOutHandler);
     this.element = null;
   }
 }

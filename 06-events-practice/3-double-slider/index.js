@@ -62,7 +62,7 @@ addEventListeners() {
   this.leftThumbElement.addEventListener('pointerdown', event => this.mouseDownHandler(event));
   this.rightThumbElement.addEventListener('pointerdown', event => this.mouseDownHandler(event));
 
-  document.addEventListener('pointerup', (event) => {
+  document.addEventListener('pointerup', this.pointerUpEventHandler = (event) => {
     document.removeEventListener('pointermove', this.mouseMoveHandler);
 
     if (this.element) {
@@ -105,6 +105,12 @@ getTemplate() {
 }
 
 destroy() {
+  document.removeEventListener('pointerup', this.pointerUpEventHandler);
+
+  if (this.element) {
+    this.element.remove();
+  }
+  
   this.element = null;
 }
 
