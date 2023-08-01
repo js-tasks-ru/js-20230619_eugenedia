@@ -1,4 +1,4 @@
-import dynamicSort from "./sorting-function.js"
+import dynamicSort from "./sorting-function.js";
 export default class SortableTable {
   constructor(headerConfig = [], data = []) {
     
@@ -111,8 +111,8 @@ export default class SortableTable {
   createTableBodyRowElement(rowData) {
     const tableBodyCellElement = document.createElement('template');
     
-    let cellsData = this.headerConfig.map( field => {
-      return this.getTableCellTemplate(rowData[field.id], field.id)
+    let cellsData = this.headerConfig.map(field => {
+      return this.getTableCellTemplate(rowData[field.id], field.id);
     }).join(' ');
 
     tableBodyCellElement.innerHTML = `<a href="/products/${rowData.id}" class="sortable-table__row">

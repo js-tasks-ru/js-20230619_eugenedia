@@ -12,7 +12,7 @@ export default class NotificationMessage {
     this.type = type;
     this.message = message;
     
-    if(NotificationMessage.element) {
+    if (NotificationMessage.element) {
       NotificationMessage.element.remove();
     }
 
